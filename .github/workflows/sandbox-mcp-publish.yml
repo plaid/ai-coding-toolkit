@@ -64,4 +64,16 @@ jobs:
         # Display updated pyproject.toml
         echo "Updated pyproject.toml content:"
         cat pyproject.toml
-  
+    
+    - name: Build package with uv
+      working-directory: ./sandbox
+      run: |
+        # Build using uv build which handles both sdist and wheel
+        uv build
+
+    - name: Publish package to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        user: __token__
+        password: ${{ secrets.PYPI_API_TOKEN }}
+        packages-dir: sandbox/dist/
