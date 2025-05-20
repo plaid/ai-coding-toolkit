@@ -1,0 +1,67 @@
+name: Publish Sandbox MCP Python Package
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.10'
+
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+
+    - name: Verify uv installation
+      run: uv --version
+
+    - name: Generate version with commit hash
+      id: generate_version
+      working-directory: ./sandbox
+      run: |
+        # Get current Git commit short hash (first 7 characters)
+        COMMIT_HASH=$(git rev-parse --short HEAD)
+        
+        # Get current date in YYYYMMDD format
+        DATE_PREFIX=$(date +'%Y%m%d')
+        
+        # Check if version is already defined in pyproject.toml
+        if grep -q "version =" "pyproject.toml"; then
+          # Read the base version (remove any existing local version identifiers)
+          CURRENT_VERSION=$(grep "version =" "pyproject.toml" | sed -E 's/version *= *"([^+]+)(\+.*)?".*/\1/')
+          echo "Base version: $CURRENT_VERSION"
+          
+          # Final version: base version + date.commit hash
+          FINAL_VERSION="${CURRENT_VERSION}+${DATE_PREFIX}.${COMMIT_HASH}"
+          echo "Final version: $FINAL_VERSION"
+          
+          # Update version in pyproject.toml
+          sed -i -E "s/version *= *\"[^\"]+\"/version = \"$FINAL_VERSION\"/" pyproject.toml
+          
+          # Output version for later steps
+          echo "version=$FINAL_VERSION" >> $GITHUB_OUTPUT
+          echo "base_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
+        else
+          # If no version is defined, add initial version 0.1.0+date.commit hash
+          FINAL_VERSION="0.1.0+${DATE_PREFIX}.${COMMIT_HASH}"
+          echo "No version found. Adding initial version: $FINAL_VERSION"
+          
+          # Add version in the appropriate location
+          sed -i "/build-backend/a version = \"$FINAL_VERSION\"" pyproject.toml
+          
+          echo "version=$FINAL_VERSION" >> $GITHUB_OUTPUT
+          echo "base_version=0.1.0" >> $GITHUB_OUTPUT
+        fi
+        
+        # Display updated pyproject.toml
+        echo "Updated pyproject.toml content:"
+        cat pyproject.toml
+  
