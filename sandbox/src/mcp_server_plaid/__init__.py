@@ -1,9 +1,9 @@
-from . import server_test
+from . import server
 
 
 def main():
     """Main entry point for the package."""
-    server_test.main()
+    server.main()
 
 
 # Optionally expose other important items at package level
