@@ -1,7 +1,16 @@
-name: Publish Sandbox MCP Python Package
+name: Publish Sandbox MCP
 
 on:
   workflow_dispatch:
+    inputs:
+      release_type:
+        description: 'Release type'
+        required: true
+        default: 'dev'
+        type: choice
+        options:
+          - 'dev'     # Development release (with date+commit)
+          - 'formal'  # Formal release (use exact version from pyproject.toml)
 
 permissions:
   contents: read
@@ -23,7 +32,7 @@ jobs:
     - name: Verify uv installation
       run: uv --version
 
-    - name: Generate version with commit hash
+    - name: Generate version
       id: generate_version
       working-directory: ./sandbox
       run: |
@@ -35,30 +44,38 @@ jobs:
         
         # Check if version is already defined in pyproject.toml
         if grep -q "version =" "pyproject.toml"; then
-          # Read the base version (remove any existing local version identifiers)
-          CURRENT_VERSION=$(grep "version =" "pyproject.toml" | sed -E 's/version *= *"([^+]+)(\+.*)?".*/\1/')
-          echo "Base version: $CURRENT_VERSION"
+          # Read the current base version
+          CURRENT_VERSION=$(grep "version =" "pyproject.toml" | sed -E 's/version *= *"([^"]+)".*/\1/' | sed -E 's/(\+.*)$//')
+          echo "Base version from pyproject.toml: $CURRENT_VERSION"
           
-          # Final version: base version + date.commit hash
-          FINAL_VERSION="${CURRENT_VERSION}+${DATE_PREFIX}.${COMMIT_HASH}"
-          echo "Final version: $FINAL_VERSION"
+          # Handle different release types
+          if [ "${{ github.event.inputs.release_type }}" = "formal" ]; then
+            # For formal release, use version exactly as in pyproject.toml
+            FINAL_VERSION="${CURRENT_VERSION}"
+            echo "Formal release - using exact version: $FINAL_VERSION"
+          else
+            # For dev release, append date and commit hash
+            FINAL_VERSION="${CURRENT_VERSION}.${DATE_PREFIX}r${COMMIT_HASH}"
+            echo "Dev release - using version with timestamp: $FINAL_VERSION"
+          fi
           
           # Update version in pyproject.toml
           sed -i -E "s/version *= *\"[^\"]+\"/version = \"$FINAL_VERSION\"/" pyproject.toml
           
           # Output version for later steps
           echo "version=$FINAL_VERSION" >> $GITHUB_OUTPUT
-          echo "base_version=$CURRENT_VERSION" >> $GITHUB_OUTPUT
         else
-          # If no version is defined, add initial version 0.1.0+date.commit hash
-          FINAL_VERSION="0.1.0+${DATE_PREFIX}.${COMMIT_HASH}"
-          echo "No version found. Adding initial version: $FINAL_VERSION"
+          # If no version defined, add initial version
+          if [ "${{ github.event.inputs.release_type }}" = "formal" ]; then
+            FINAL_VERSION="0.1.0"
+          else
+            FINAL_VERSION="0.1.0.${DATE_PREFIX}r${COMMIT_HASH}"
+          fi
           
-          # Add version in the appropriate location
+          echo "No version found. Adding version: $FINAL_VERSION"
           sed -i "/build-backend/a version = \"$FINAL_VERSION\"" pyproject.toml
           
           echo "version=$FINAL_VERSION" >> $GITHUB_OUTPUT
-          echo "base_version=0.1.0" >> $GITHUB_OUTPUT
         fi
         
         # Display updated pyproject.toml
