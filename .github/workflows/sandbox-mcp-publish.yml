@@ -32,20 +32,17 @@ jobs:
     - name: Verify uv installation
       run: uv --version
 
-    - name: Generate version
+    - name: Generate version and ensure required metadata
       id: generate_version
       working-directory: ./sandbox
       run: |
-        # Get current Git commit short hash (first 7 characters)
-        COMMIT_HASH=$(git rev-parse --short HEAD)
-        
-        # Get current date in YYYYMMDD format
-        DATE_PREFIX=$(date +'%Y%m%d')
+        # Get current Git commit short hash (first 4 characters)
+        COMMIT_HASH=$(git rev-parse --short=4 HEAD)
         
         # Check if version is already defined in pyproject.toml
         if grep -q "version =" "pyproject.toml"; then
-          # Read the current base version
-          CURRENT_VERSION=$(grep "version =" "pyproject.toml" | sed -E 's/version *= *"([^"]+)".*/\1/' | sed -E 's/(\+.*)$//')
+          # Read the current base version (remove any existing dev suffix)
+          CURRENT_VERSION=$(grep "version =" "pyproject.toml" | sed -E 's/version *= *"([^"]+)".*/\1/' | sed -E 's/(\.dev.*)$//')
           echo "Base version from pyproject.toml: $CURRENT_VERSION"
           
           # Handle different release types
@@ -54,9 +51,9 @@ jobs:
             FINAL_VERSION="${CURRENT_VERSION}"
             echo "Formal release - using exact version: $FINAL_VERSION"
           else
-            # For dev release, append date and commit hash
-            FINAL_VERSION="${CURRENT_VERSION}.${DATE_PREFIX}r${COMMIT_HASH}"
-            echo "Dev release - using version with timestamp: $FINAL_VERSION"
+            # For dev release, append .dev and commit hash (first 4 chars)
+            FINAL_VERSION="${CURRENT_VERSION}.dev${COMMIT_HASH}"
+            echo "Dev release - using version with dev suffix: $FINAL_VERSION"
           fi
           
           # Update version in pyproject.toml
@@ -69,7 +66,7 @@ jobs:
           if [ "${{ github.event.inputs.release_type }}" = "formal" ]; then
             FINAL_VERSION="0.1.0"
           else
-            FINAL_VERSION="0.1.0.${DATE_PREFIX}r${COMMIT_HASH}"
+            FINAL_VERSION="0.1.0.dev${COMMIT_HASH}"
           fi
           
           echo "No version found. Adding version: $FINAL_VERSION"
@@ -77,10 +74,6 @@ jobs:
           
           echo "version=$FINAL_VERSION" >> $GITHUB_OUTPUT
         fi
-        
-        # Display updated pyproject.toml
-        echo "Updated pyproject.toml content:"
-        cat pyproject.toml
     
     - name: Build package with uv
       working-directory: ./sandbox
