@@ -7,8 +7,20 @@ A Model Context Protocol server for facilitating integration with Plaid. This se
 ### Tools
 
 1. `get_mock_data_prompt`
-   - Generate customized mock financial data for testing
-   - Returns: Properly formatted mock data for use with sandbox testing
+   - Return prompt to generate customized mock financial data for testing
+
+2. `search_documentation`
+   - Search Plaid documentation for relevant information about products or API endpoints
+   - Returns: Detailed information from Plaid's documentation
+
+3. `get_sandbox_access_token`
+   - Obtain a working access token for the Plaid sandbox environment
+   - Returns: Access token and item ID for testing with sandbox mocked data
+
+4. `simulate_webhook`
+   - Simulate a Plaid webhook event in the sandbox environment
+   - Useful for testing your application's webhook handling
+   - Returns: Webhook fired status and status code
 
 ## Configuration
 
