@@ -19,7 +19,7 @@ Before starting the integration, check with the user and make sure:
 
 ## Step 1: Backend - Create a Link Token
 
-The Link Token is a short-lived token created server-side that configures the [Plaid Link](mdc:https:/plaid.com/docs/link) flow. This token must be generated on your backend and passed to the frontend.
+The Link Token is a short-lived token created server-side that configures the [Plaid Link](https:/plaid.com/docs/link) flow. This token must be generated on your backend and passed to the frontend.
 
 ### 1.1 API Endpoint
 
@@ -195,4 +195,3 @@ logging.basicConfig(level=logging.INFO)
 logging.info(f"Calling Plaid endpoint: {url} with payload: {payload}")
 logging.info(f"Plaid response: {response.status_code} {response.text}")
 ```
-
