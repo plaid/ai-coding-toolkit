@@ -19,7 +19,7 @@ from mcp.server import Server
 from mcp.server.models import InitializationOptions
 from plaid.api import plaid_api
 
-# from mcp_server_plaid.clients.bill import AskBillClient
+from mcp_server_plaid.clients.bill import AskBillClient
 from mcp_server_plaid.tools import register_all_tools
 
 # Set up logging
@@ -37,7 +37,7 @@ async def serve(client_id: str, secret: str, enabled_categories: str) -> Server:
     """Initialize and configure the MCP server with Plaid tools."""
     server = Server("plaid")
 
-    # ask_bill_client = AskBillClient()
+    ask_bill_client = AskBillClient("wss://hello-finn.herokuapp.com/")
 
     configuration = plaid.Configuration(
         host=plaid.Environment.Sandbox,
@@ -72,7 +72,7 @@ async def serve(client_id: str, secret: str, enabled_categories: str) -> Server:
         # Call the handler with the arguments and context
         return await handler(
             arguments or {},  # Ensure arguments is not None
-            # bill_client=ask_bill_client,
+            bill_client=ask_bill_client,
             plaid_client=plaid_client,
         )
 
