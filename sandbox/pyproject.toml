@@ -31,7 +31,7 @@ testpaths = ["src/mcp_server_plaid/test"]
 python_files = "test_*.py"
 
 [project.optional-dependencies]
-dev = [
+test = [
     "pytest>=7.0.0",
     "pytest-asyncio>=0.21.0",
     "pytest-cov>=4.1.0",
