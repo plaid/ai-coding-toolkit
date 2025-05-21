@@ -1,11 +1,11 @@
-name: Python Unit Tests
+name: Python Tests
 
 on:
   pull_request:
     branches: [ main ]  # Run when someone creates a PR to merge into main
 
 jobs:
-  test:
+  unittest:
     runs-on: ubuntu-latest
 
     steps:
