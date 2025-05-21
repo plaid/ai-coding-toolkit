@@ -96,14 +96,7 @@ def main(client_id: str, secret: str, enabled_categories: str):
     async def _run():
         logger.info("Setting up stdio communication channels")
         async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
-            server = await serve(client_id, secret, enabled_categories)
-            await server.run(
-                read_stream,
-                write_stream,
-                InitializationOptions(
-                    server_name="plaid",
-                    server_version=__version__,
-                    capabilities=server.get_capabilities(
+          get_capabilities(
                         notification_options=NotificationOptions(),
                         experimental_capabilities={},
                     ),
