@@ -1,6 +1,6 @@
-# MCP (Model Context Providers) for Plaid
+# MCP (Model Context Protocol) for Plaid
 
-This repository contains MCP (Model Context Providers) servers for integrating with Plaid APIs through function calling. Model Context Providers enable AI assistants to access external tools and data sources, enhancing their capabilities to help with specific tasks.
+This repository contains MCP (Model Context Protocol) servers for integrating with Plaid APIs through function calling. Model Context Protocol enable AI assistants to access external tools and data sources, enhancing their capabilities to help with specific tasks.
 
 ## Repository Structure
 
