@@ -41,8 +41,11 @@ based on the following guidelines.
     <amount_patterns>
       - Business Accounts: $9 to $15,000
       - Personal Accounts: $1 to $5,000
-      - Include both positive (credits) and negative (debits) values
       - Recurring transactions should have similar amounts each month
+      - Include both positive (debits) and negative (credits) values. Positive 
+        values when money moves out of the account; negative values when money 
+        moves in. For example, debit card purchases are positive; credit card 
+        payments, direct deposits, and refunds are negative. 
     </amount_patterns>
 
     <description_patterns>
