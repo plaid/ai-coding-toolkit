@@ -11,6 +11,9 @@ Assumptions:
 
 This document references Plaid's official documentation using markdown links.
 
+> [!WARNING]
+This guide is designed to be used for the purpose of building a sample Plaid integration with the use of AI coding tools. You are solely responsible for ensuring the correctness, legality, security, privacy, and compliance of your own app and Plaid integration. This guide is provided under the MIT license and is provided as-is and without warranty of any kind.
+
 ## Prerequisites
 
 Before starting the integration, check with the user and make sure: 
