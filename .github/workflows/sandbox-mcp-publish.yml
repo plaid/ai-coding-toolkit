@@ -15,6 +15,7 @@ on:
 permissions:
   contents: read
   id-token: write
+  attestations: write  # Added for attestation support
 
 jobs:
   publish-to-pypi:
@@ -81,6 +82,11 @@ jobs:
       run: |
         # Build using uv build which handles both sdist and wheel
         uv build
+        
+    - name: Generate artifact attestation
+      uses: actions/attest-build-provenance@v2
+      with:
+        subject-path: 'sandbox/dist/*'
 
     - name: Publish package to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
