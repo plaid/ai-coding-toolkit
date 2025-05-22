@@ -42,7 +42,10 @@ The `/rules` directory contains comprehensive guides for various Plaid products 
 
 2. **Cursor Rules**: Import them as Cursor rules to enable your AI coding assistant to automatically understand Plaid's integration patterns and best practices.
 
-Using these rules significantly accelerates development by giving AI models the context they need to generate accurate, production-ready code for Plaid integrations.
+Using these rules significantly accelerates development by giving AI models the context they need to generate code for Plaid integrations.
+
+> [!WARNING]
+These guides are designed to be used for the purpose of building a sample Plaid integration with the use of AI coding tools. You are solely responsible for ensuring the correctness, legality, security, privacy, and compliance of your own app and Plaid integration. This guide is provided under the MIT license and is provided as-is and without warranty of any kind.
 
 ## License
 
