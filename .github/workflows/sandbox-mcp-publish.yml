@@ -20,6 +20,9 @@ permissions:
 jobs:
   publish-to-pypi:
     runs-on: ubuntu-latest
+    environment: 
+      name: 'pypi-production'
+      url: https://pypi.org/project/mcp-server-plaid
     steps:
     - uses: actions/checkout@v4
     
