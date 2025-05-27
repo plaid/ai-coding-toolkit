@@ -22,7 +22,7 @@ Before starting the integration, check with the user and make sure:
 
 ## Step 1: Backend - Create a Link Token
 
-The Link Token is a short-lived token created server-side that configures the [Plaid Link](https:/plaid.com/docs/link) flow. This token must be generated on your backend and passed to the frontend.
+The Link Token is a short-lived token created server-side that configures the [Plaid Link](https://plaid.com/docs/link) flow. This token must be generated on your backend and passed to the frontend.
 
 ### 1.1 API Endpoint
 
@@ -172,29 +172,17 @@ while True:
     cursor = response.next_cursor
 ```
 
-## Security & Storage Notes
-
-- **Do not log access tokens**.
-- Store access tokens securely per user.
-- Tokens persist indefinitely unless manually removed or revoked.
-- Always validate request origin and authenticate client calls.
-
 ## Additional Tips
 
 - Use `transactions/sync` to keep user data fresh.
 - Retry on `PRODUCT_NOT_READY` errors.
 - Respect rate limits and add exponential backoff.
 
-## Good Practice
+## Best Practice
 
-- Always add logs for all Plaid API requests and responses in the backend implementation. This includes logging the request payload (excluding sensitive data like client secrets and access tokens), the endpoint being called, and the response status/result.
+- Do NOT log access tokens OR API credentials.
+- Store access tokens securely in the backend database, do not save the access token in the frontend.
+- If to build a prototype for simplicity, you could maintain an in memory mapping between the access token and user_id. You can create an endpoint `/api/update_access_token` so that you can update the access token for a specific user id. 
+- Tokens persist indefinitely unless manually removed or revoked.
+- Always validate request origin and authenticate client calls.
 - Log all errors and exceptions with enough context to debug issues, but never log sensitive credentials or tokens.
-- Example (Python):
-```python
-import logging
-logging.basicConfig(level=logging.INFO)
-
-# ...
-logging.info(f"Calling Plaid endpoint: {url} with payload: {payload}")
-logging.info(f"Plaid response: {response.status_code} {response.text}")
-```
