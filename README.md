@@ -1,5 +1,7 @@
 # AI Coding Tookit for Plaid
 
+A comprehensive toolkit designed to accelerate Plaid integration development using AI coding assistants. This repository provides sandbox MCP tools (mock data generation, documentation search capabilities, etc.) and product-specific guides to help developers build Plaid integrations faster and more efficiently with AI assistance.
+
 ## Repository Structure
 
 - `/sandbox`: Contains a sandbox MCP server implementation that helps developers integrate with Plaid more quickly by providing mock data and sandbox API access.
