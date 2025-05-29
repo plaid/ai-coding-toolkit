@@ -1,6 +1,4 @@
-# MCP (Model Context Protocol) for Plaid
-
-This repository contains MCP (Model Context Protocol) servers for integrating with Plaid APIs through function calling. Model Context Protocol enable AI assistants to access external tools and data sources, enhancing their capabilities to help with specific tasks.
+# AI Coding Tookit for Plaid
 
 ## Repository Structure
 
