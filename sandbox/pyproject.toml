@@ -10,11 +10,7 @@ readme = "README.md"
 requires-python = ">=3.11"
 license = {text = "MIT"}
 authors = [
-    {name = "Plaid"}
-]
-maintainers = [
-    { name = "Wang Tian", email = "wtian@plaid.com" },
-    { name = "Stella Zhang", email = "szhang@plaid.com" },
+    {name = "Plaid Inc.", email = "developers@plaid.com" }
 ]
 dependencies = [
     "httpx",
