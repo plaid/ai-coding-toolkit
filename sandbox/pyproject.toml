@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mcp-server-plaid"
-version = "0.0.1"
+version = "0.1.0"
 description = "Model Context Protocol (MCP) server to build fast integration testing with Plaid Sandbox data."
 readme = "README.md"
 requires-python = ">=3.11"
