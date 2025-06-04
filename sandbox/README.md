@@ -24,6 +24,20 @@ A Model Context Protocol server for facilitating integration with Plaid. This se
 
 ## Configuration
 
+### Obtaining API Credentials
+
+1. Sign in to your [Plaid Developer Dashboard](https://developer.plaid.com) account
+2. Navigate to **Developers** → **[Keys](https://dashboard.plaid.com/developers/keys)**
+3. Locate your **sandbox credentials** as illustrated in the screenshot below.
+
+>[!Important]
+All `PLAID_CLIENT_ID` and `PLAID_SECRET` references in the following MCP configuration use **sandbox credentials**.
+
+
+<img width="890" alt="image" src="https://github.com/user-attachments/assets/d0c0030a-93c9-4d3f-bb21-1f12b5c1e8e9" />
+
+
+
 ### Usage with Claude Desktop
 
 Add this to your `claude_desktop_config.json`:
