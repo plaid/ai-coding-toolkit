@@ -88,7 +88,7 @@ Add this to your `claude_desktop_config.json`:
 ### Usage with Cursor
 For quick installation, use the one-click installation button 
 
-<a href="cursor://anysphere.cursor-deeplink/mcp/install?name=plaid&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJtY3Atc2VydmVyLXBsYWlkIl0sImVudiI6eyJQTEFJRF9DTElFTlRfSUQiOiJBRERfWU9VUl9DTElFTlRfSUQiLCJQTEFJRF9TRUNSRVQiOiJBRERfWU9VUl9BUElfU0VDUkVUIn19"><img src="https://cursor.com/deeplink/mcp-install-dark.png" alt="Add plaid MCP server to Cursor" style="height: 20px;" /></a>
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=plaid&config=eyJjb21tYW5kIjoidXZ4IG1jcC1zZXJ2ZXItcGxhaWQiLCJlbnYiOnsiUExBSURfQ0xJRU5UX0lEIjoiQUREX1lPVVJfQ0xJRU5UX0lEIiwiUExBSURfU0VDUkVUIjoiQUREX1lPVVJfQVBJX1NFQ1JFVCJ9fQ%3D%3D)
 
 For manual installation, add the following JSON block to Cursor MCP config file,
 <details>
