@@ -86,10 +86,6 @@ Add this to your `claude_desktop_config.json`:
 </details>
 
 ### Usage with Cursor
-For quick installation, use the one-click installation button 
-
-[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=plaid&config=eyJjb21tYW5kIjoidXZ4IG1jcC1zZXJ2ZXItcGxhaWQiLCJlbnYiOnsiUExBSURfQ0xJRU5UX0lEIjoiQUREX1l)
-
 For manual installation, add the following JSON block to Cursor MCP config file,
 <details>
 <summary>Using uvx</summary>
