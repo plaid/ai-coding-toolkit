@@ -1,13 +1,13 @@
-# Plaid Signal Integration (Sandbox End-to-End Guide)
+# Plaid Signal Transaction Scores Integration (Sandbox End-to-End Guide)
 
 ## Overview
 
-This guide provides a complete, step-by-step integration of Plaid's **Signal** product using the **Sandbox** environment. It is intended to support both **frontend** and **backend** implementations in a language-agnostic format with optional language-specific hints. The goal is to enable an AI agent or developer to execute a fully functional Plaid Signal integration, from user bank linking to evaluating ACH payment risk.
+This guide provides a complete, step-by-step integration of Plaid's **Signal Transaction Scores** product using the **Sandbox** environment. It is intended to support both **frontend** and **backend** implementations in a language-agnostic format with optional language-specific hints. The goal is to enable an AI agent or developer to execute a fully functional integration, from user bank linking to evaluating ACH payment risk.
 
 Assumptions:
 - The developer has a Plaid account and Sandbox `client_id` and `secret` are available. If not provided, please ask the users for it.
 - The application is able to make HTTP requests.
-- You have been approved for Signal access (or are using Sandbox while waiting for approval).
+- You have been approved for Signal Transaction Scores access (or are using Sandbox while waiting for approval).
 
 This document references Plaid's official documentation using markdown links.
 
@@ -22,7 +22,7 @@ Before starting the integration, ensure the following:
 - You have obtained your **client ID** and **Sandbox secret** from the dashboard.
 - You are working in the [Sandbox environment](https:/plaid.com/docs/sandbox/overview) where test credentials and institutions are available.
 - Your development environment can serve both **frontend** and **backend** logic. The backend must be able to securely manage sensitive credentials and handle API calls.
-- You have applied for and received approval for Signal (or have received Sandbox access while waiting for approval).
+- You have applied for and received approval for Signal Transaction Scores (or have received Sandbox access while waiting for approval).
 
 ## Step 1: Create a Signal Ruleset in the Dashboard
 
@@ -152,9 +152,9 @@ After the user completes the Link flow, your frontend receives a `public_token`.
 
 > Store `access_token` securely on your backend. Never expose it to the frontend.
 
-## Step 5: Backend - Evaluate Transaction Risk with Signal
+## Step 5: Backend - Evaluate Transaction Risk 
 
-Now that you have an access token and account ID, you can evaluate the risk of an ACH transaction using Signal.
+Now that you have an access token and account ID, you can evaluate the risk of an ACH transaction.
 
 ### 5.1 API Endpoint
 
