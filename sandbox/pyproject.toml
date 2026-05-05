@@ -22,9 +22,9 @@ dependencies = [
 [project.scripts]
 mcp-server-plaid = "mcp_server_plaid:main"
 
-[tool.pytest]
+[tool.pytest.ini_options]
 testpaths = ["src/mcp_server_plaid/test"]
-python_files = "test_*.py"
+python_files = ["test_*.py"]
 
 [project.optional-dependencies]
 test = [
