@@ -33,7 +33,13 @@ SEARCH_DOCUMENTATION_TOOL = types.Tool(
 )
 
 
+def _escape_md_brackets(text: str) -> str:
+    """Escape characters that would break a markdown link's title text."""
+    return text.replace("\\", "\\\\").replace("[", "\\[").replace("]", "\\]")
+
+
 def _format_sources(sources: List[Dict[str, Any]]) -> str:
+    """Format AskBill source metadata as a deduplicated markdown bullet list."""
     seen_urls = set()
     lines = []
     for source in sources:
@@ -43,9 +49,12 @@ def _format_sources(sources: List[Dict[str, Any]]) -> str:
             continue
         if url:
             seen_urls.add(url)
-            lines.append(f"- [{title}]({url})" if title != url else f"- {url}")
+            if title != url:
+                lines.append(f"- [{_escape_md_brackets(title)}](<{url}>)")
+            else:
+                lines.append(f"- <{url}>")
         elif title:
-            lines.append(f"- {title}")
+            lines.append(f"- {_escape_md_brackets(title)}")
     return "\n".join(lines)
 
 
@@ -58,7 +67,7 @@ async def handle_search_documentation(
     sources = response.get("sources") or []
     formatted_sources = _format_sources(sources)
     if formatted_sources:
-        answer = f"{answer}\n\n## Sources\n{formatted_sources}"
+        answer = f"{answer.rstrip()}\n\n## Sources\n{formatted_sources}"
     return [types.TextContent(type="text", text=answer)]
 
 
