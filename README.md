@@ -1,6 +1,14 @@
 # AI Coding Tookit for Plaid
 
-A comprehensive toolkit designed to accelerate Plaid integration development using AI coding assistants. This repository provides sandbox MCP tools (mock data generation, documentation search capabilities, etc.) and product-specific guides to help developers build Plaid integrations faster and more efficiently with AI assistance.
+A toolkit designed to accelerate Plaid integration development using AI coding assistants. This repository provides local MCP tools (mock data generation, documentation search capabilities, etc.) and product-specific guides to help developers build Plaid integrations faster and more efficiently with AI assistance.
+
+## Plaid AI tools
+
+The AI toolkit is part of a suite of tools to accelerate AI-powered development. Other tools include:
+
+- [Plaid CLI](https://plaid.com/docs/resources/cli/) - Install and use the Plaid CLI to access your financial data from the terminal
+- [Plaid Dashboard MCP](https://plaid.com/docs/resources/mcp/) - Access the Plaid Dashboard at runtime 
+- [LLMs.txt](https://plaid.com/docs/llms.txt) - An index of markdown documentation
 
 ## Repository Structure
 
