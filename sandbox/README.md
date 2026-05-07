@@ -10,7 +10,7 @@ A Model Context Protocol server for facilitating integration with Plaid. This se
    - Return prompt to generate customized mock financial data for testing
 
 2. `search_documentation`
-   - Search Plaid documentation for relevant information about products or API endpoints
+   - Search Plaid documentation for relevant information about products or API endpoints using with the help of Bill, the friendly robot platypus who reads our docs for fun.
    - Returns: Detailed information from Plaid's documentation
 
 3. `get_sandbox_access_token`
