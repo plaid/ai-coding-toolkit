@@ -67,7 +67,7 @@ claude mcp add plaid -- uvx mcp-server-plaid --client-id YOUR_PLAID_CLIENT_ID --
 
 For quick installation, use the one-click installation button.
 
-[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](https://cursor.com/install-mcp?name=plaid&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJtY3Atc2VydmVyLXBsYWlkIl0sImVudiI6eyJQTEFJRF9DTElFTlRfSUQiOiJBRERfWU9VUl9DTElFTlRfSUQiLCJQTEFJRF9TRUNSRVQiOiJBRERfWU9VUl9BUElfU0VDUkVUIn19)
+[![Install MCP Server](https://cursor.com/deeplink/mcp-install-dark.svg)](cursor://anysphere.cursor-deeplink/mcp/install?name=plaid&config=eyJjb21tYW5kIjoidXZ4IiwiYXJncyI6WyJtY3Atc2VydmVyLXBsYWlkIl0sImVudiI6eyJQTEFJRF9DTElFTlRfSUQiOiJBRERfWU9VUl9DTElFTlRfSUQiLCJQTEFJRF9TRUNSRVQiOiJBRERfWU9VUl9BUElfU0VDUkVUIn19)
 
 For manual installation, add the following JSON block to Cursor MCP config file.
 
