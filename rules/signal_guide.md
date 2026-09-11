@@ -12,7 +12,10 @@ This guide provides a complete, step-by-step integration of Plaid Signal using t
 This guide applies to both. If you only need a pre-payment balance check today, integrate `/signal/evaluate` with a Balance-only ruleset now; you can upgrade to Signal Transaction Scores later via a Dashboard configuration change, with no re-integration. **If you are building a pay-by-bank or account-funding flow and need to add ACH return mitigation, this is the recommended path. Do not use `/accounts/balance/get` for payment risk checks** — that endpoint is for non-payment use cases such as personal financial management or treasury, and it does not evaluate risk against Signal Rules.
 
 Assumptions:
-- The developer has a Plaid account and Sandbox `client_id` and `secret` are available. If not provided, please ask the users for it.
+- The developer has a Plaid account and Sandbox credentials configured in `.env`. If not, run
+  `plaid keys write --env sandbox` ([Plaid CLI](https://plaid.com/docs/resources/cli/)), which fetches
+  them from the Dashboard and writes the file. Never ask the user to paste a `client_id` or `secret`
+  into chat.
 - The application is able to make HTTP requests.
 - You have access to Signal. The Balance-only tier is available to Balance customers; the Signal Transaction Scores tier requires separate approval (you can use Sandbox while waiting for approval).
 
@@ -26,7 +29,7 @@ This guide is designed to be used for the purpose of building a sample Plaid int
 Before starting the integration, ensure the following:
 
 - You have a [Plaid Developer Dashboard](https://dashboard.plaid.com) account.
-- You have obtained your **client ID** and **Sandbox secret** from the dashboard.
+- Your Sandbox **client ID** and **secret** are in `.env`, written by `plaid keys write --env sandbox`.
 - You are working in the [Sandbox environment](https://plaid.com/docs/sandbox/) where test credentials and institutions are available.
 - Your development environment can serve both **frontend** and **backend** logic. The backend must be able to securely manage sensitive credentials and handle API calls.
 - You have access to Signal. The Balance-only tier is available to Balance customers; the Signal Transaction Scores tier requires separate approval (you can use Sandbox while waiting for approval).

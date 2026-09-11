@@ -6,7 +6,10 @@ This guide provides a complete, step-by-step integration of Plaid's **Transactio
 
 Assumptions:
 
-- The developer has a Plaid account and Sandbox `client_id` and `secret` are available. If not provided, please ask the users for it.
+- The developer has a Plaid account and Sandbox credentials configured in `.env`. If not, run
+  `plaid keys write --env sandbox` ([Plaid CLI](https://plaid.com/docs/resources/cli/)), which fetches
+  them from the Dashboard and writes the file. Never ask the user to paste a `client_id` or `secret`
+  into chat.
 - The application is able to make HTTP requests.
 
 This document references Plaid's official documentation using markdown links.
@@ -17,7 +20,7 @@ This guide is designed to be used for the purpose of building a sample Plaid int
 ## Prerequisites
 
 Before starting the integration, check with the user and make sure: 
-- You have obtained your **client ID** and **Sandbox secret** from the dashboard.
+- Your Sandbox **client ID** and **secret** are in `.env`, written by `plaid keys write --env sandbox`.
 - Your development environment can serve both **frontend** and **backend** logic. The backend must be able to securely manage sensitive credentials and handle API calls.
 
 ## Step 1: Backend - Create a Link Token
