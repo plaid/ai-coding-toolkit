@@ -186,7 +186,7 @@ Now that you have an access token and account ID, you can evaluate the risk of a
 }
 ```
 
-All of the above are REQUIRED properties
+`access_token`, `account_id`, `client_transaction_id`, and `amount` are REQUIRED. The other properties are optional.
 
 ### 5.3 Sandbox Testing
 

@@ -60,7 +60,7 @@ Send a POST request to Plaid with the following JSON payload:
 
 **Optional Parameters:**
 
-- `webhook`: URL to receive transfer webhooks (recommended in production).
+- `webhook`: URL to receive Item webhooks. Transfer webhooks are configured separately in the Plaid Dashboard (see Step 6.2).
 - `redirect_uri`: Required only for OAuth-based institutions.
 
 ### 1.3 Example Response
@@ -252,7 +252,7 @@ Transfers go through various status changes as they progress through the payment
 {
   "client_id": "<your-client-id>",
   "secret": "<your-sandbox-secret>",
-  "after_id": "<last-event-id>"  // Optional, to only get new events
+  "after_id": 0  // Required: the largest event_id fetched so far, or 0 initially
 }
 ```
 
@@ -262,9 +262,9 @@ Transfers go through various status changes as they progress through the payment
 {
   "transfer_events": [
     {
-      "event_id": "event-id-1",
+      "event_id": 1,
       "timestamp": "2022-01-01T12:00:00Z", 
-      "event_type": "TRANSFER_CREATED",
+      "event_type": "pending",
       "account_id": "account-id-xxx",
       "transfer_id": "transfer-id-xxx",
       "origination_account_id": "origination-account-id",
@@ -272,9 +272,9 @@ Transfers go through various status changes as they progress through the payment
       "transfer_amount": "100.00"
     },
     {
-      "event_id": "event-id-2",
+      "event_id": 2,
       "timestamp": "2022-01-02T15:30:00Z",
-      "event_type": "TRANSFER_STATUS_UPDATE",
+      "event_type": "posted",
       "account_id": "account-id-xxx",
       "transfer_id": "transfer-id-xxx",
       "origination_account_id": "origination-account-id",
@@ -297,7 +297,12 @@ All possible values for `event_type` include:
   - **posted**: The transfer has been successfully submitted to the payment network.
   - **settled**: The transfer has been successfully completed by the payment network.
   - **funds_available**: Funds from the transfer have been released from hold and applied to the ledger's available balance. (Only applicable to ACH debits.)
+  - **guaranteed**: The transfer has been fully guaranteed by Plaid.
   - **returned**: A posted transfer was returned.
+  - **adjustment**: An adjustment was made to the transfer due to rare activity, such as a dishonor. Refer to `event_amount` for the amount adjusted.
+  - **guarantee_reimbursed**: Plaid reimbursed the client for the loss on a returned guaranteed transfer.
+  - **client_return_recovered**: The client reported recovering the loss on a returned transfer via `/transfer/return/recover`, and Plaid debited the recovered amount from the client's ledger.
+  - **plaid_return_recovered**: Plaid recovered the loss on a returned transfer by successfully reinitiating it.
   - **swept**: The transfer was swept to / from the sweep account.
   - **swept_settled**: Credits are available to be withdrawn or debits have been deducted from the customer's business checking account.
   - **return_swept**: Due to the transfer being returned, funds were pulled from or pushed back to the sweep account.
@@ -323,7 +328,7 @@ All possible values for `event_type` include:
 
 ### 6.2 Webhook Method
 
-Configure a webhook URL in your Link token creation to receive event notifications automatically.
+Register a "Transfer event" webhook URL on the Webhooks page of the [Plaid Dashboard](https://dashboard.plaid.com/team/webhooks). Transfer webhooks tell you new events are available; call `/transfer/event/sync` to fetch them. See [Reconciling transfers](https://plaid.com/docs/transfer/reconciling-transfers/).
 
 ## Step 7: Sandbox Testing
 
