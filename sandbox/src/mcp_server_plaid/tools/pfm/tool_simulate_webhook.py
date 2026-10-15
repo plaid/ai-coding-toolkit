@@ -36,15 +36,15 @@ SIMULATE_WEBHOOK_TOOL = types.Tool(
             "webhook_code": {
                 "type": "string",
                 "description": """The specific webhook event code to simulate (e.g., 'DEFAULT_UPDATE', 'SYNC_UPDATES_AVAILABLE', 
-                'TRANSACTIONS_REMOVED'). Common codes include 'DEFAULT_UPDATE' for new transactions, 'HISTORICAL_UPDATE' for 
-                initial transaction fetch, and 'USER_PERMISSION_REVOKED' for revoked access. You can use the 'ask_bill' tool to 
-                find appropriate values.""",
+                'NEW_ACCOUNTS_AVAILABLE'). Common codes include 'SYNC_UPDATES_AVAILABLE' for new transactions, 'DEFAULT_UPDATE' 
+                for product updates, and 'USER_PERMISSION_REVOKED' for revoked access. You can use the `search_documentation` 
+                tool (powered by Ask Bill) to find appropriate values.""",
             },
             "webhook_type": {
                 "type": "string",
                 "description": """The category of webhook to fire (e.g., 'TRANSACTIONS', 'ITEM', 'AUTH'). Must be compatible 
-                with the webhook_code. For example, 'DEFAULT_UPDATE' requires 'TRANSACTIONS' type. You can use the 'ask_bill' tool 
-                to find appropriate values.""",
+                with the webhook_code. For example, 'DEFAULT_UPDATE' requires 'TRANSACTIONS' type. You can use the `search_documentation` 
+                tool (powered by Ask Bill) to find appropriate values.""",
                 "default": "",
             },
         },

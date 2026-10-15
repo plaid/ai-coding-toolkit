@@ -166,19 +166,25 @@ Save `next_cursor` to resume syncs. If `has_more` is `true`, repeat call with cu
 #### 4.3 Loop Example (Pseudo-code)
 
 ```python
-cursor = ""
+cursor = load_saved_cursor()  # "" on the first sync
+added, modified, removed = [], [], []
 while True:
     response = transactions_sync(cursor)
-    process(response.added)
+    added += response.added
+    modified += response.modified
+    removed += response.removed
+    cursor = response.next_cursor
     if not response.has_more:
         break
-    cursor = response.next_cursor
+# Apply all pages, then persist the final cursor
+apply_updates(added, modified, removed)
+save_cursor(cursor)
 ```
 
 ## Additional Tips
 
 - Use `transactions/sync` to keep user data fresh.
-- Retry on `PRODUCT_NOT_READY` errors.
+- If data isn't ready yet, `/transactions/sync` returns no transactions and an empty `next_cursor` instead of an error. Wait for the `SYNC_UPDATES_AVAILABLE` webhook, then sync again. See [Transactions Sync migration guide](https://plaid.com/docs/transactions/sync-migration/).
 - Respect rate limits and add exponential backoff.
 
 ## Best Practice
