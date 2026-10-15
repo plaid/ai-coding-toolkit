@@ -301,7 +301,7 @@ All possible values for `event_type` include:
   - **returned**: A posted transfer was returned.
   - **adjustment**: An adjustment was made to the transfer due to rare activity, such as a dishonor. Refer to `event_amount` for the amount adjusted.
   - **guarantee_reimbursed**: Plaid reimbursed the client for the loss on a returned guaranteed transfer.
-  - **client_return_recovered**: The client reported recovering the loss on a returned transfer via `/transfer/return/recover`, and Plaid debited the recovered amount from the client's ledger.
+  - **client_return_recovered**: The client reported recovering the loss on a returned transfer, and Plaid debited the recovered amount from the client's ledger.
   - **plaid_return_recovered**: Plaid recovered the loss on a returned transfer by successfully reinitiating it.
   - **swept**: The transfer was swept to / from the sweep account.
   - **swept_settled**: Credits are available to be withdrawn or debits have been deducted from the customer's business checking account.
