@@ -1,0 +1,2 @@
+# Keep Hatchling in sync with [build-system].requires in pyproject.toml.
+hatchling==1.33.0
