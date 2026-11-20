@@ -9,89 +9,183 @@ on:
         default: 'dev'
         type: choice
         options:
-          - 'dev'     # Development release (with date+commit)
-          - 'formal'  # Formal release (use exact version from pyproject.toml)
+          - 'dev'
+          - 'formal'
 
-permissions:
-  contents: read
-  id-token: write
-  attestations: write  # Added for attestation support
+permissions: {}
 
 jobs:
-  publish-to-pypi:
-    runs-on: ubuntu-latest
-    environment: 
-      name: 'pypi-production'
-      url: https://pypi.org/project/mcp-server-plaid
+  build:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    outputs:
+      artifact-id: ${{ steps.upload.outputs.artifact-id }}
+      dist-sha256: ${{ steps.digest.outputs.sha256 }}
+    env:
+      UV_PYTHON: '3.11.14'
+      UV_PYTHON_PREFERENCE: only-managed
     steps:
-    - uses: actions/checkout@v4
-    
-    - name: Set up Python
-      uses: actions/setup-python@v5
-      with:
-        python-version: '3.11'
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+        with:
+          persist-credentials: false
 
-    - name: Install uv
-      uses: astral-sh/setup-uv@v5
+      - name: Use fresh tool and build caches
+        run: |
+          echo "UV_PYTHON_INSTALL_DIR=$RUNNER_TEMP/release-python" >> "$GITHUB_ENV"
+          echo "UV_CACHE_DIR=$RUNNER_TEMP/release-uv-cache" >> "$GITHUB_ENV"
 
-    - name: Verify uv installation
-      run: uv --version
+      - name: Install verified uv
+        uses: astral-sh/setup-uv@d4b2f3b6ecc6e67c4457f6d3e41ec42d3d0fcb86 # v5.4.2
+        with:
+          version: '0.13.5'
+          checksum: f68d291c75783122dad58ab77def0e13f3233f358731db5d6d7e8715603b928f
+          enable-cache: false
 
-    - name: Generate version and ensure required metadata
-      id: generate_version
-      working-directory: ./sandbox
-      run: |
-        # Get current Unix epoch time (seconds since January 1, 1970)
-        EPOCH_TIME=$(date +%s)
-        
-        # Check if version is already defined in pyproject.toml
-        if grep -q "version =" "pyproject.toml"; then
-          # Read the current base version (remove any existing suffixes)
-          CURRENT_VERSION=$(grep "version =" "pyproject.toml" | sed -E 's/version *= *"([^"-]+).*/\1/')
-          echo "Base version from pyproject.toml: $CURRENT_VERSION"
-          
-          # Handle different release types
-          if [ "${{ github.event.inputs.release_type }}" = "formal" ]; then
-            # For formal release, use version exactly as in pyproject.toml
-            FINAL_VERSION="${CURRENT_VERSION}"
-            echo "Formal release - using exact version: $FINAL_VERSION"
+      - name: Install verified Python
+        # The pinned uv release contains the Python download URL and SHA-256.
+        run: uv python install 3.11.14
+
+      - name: Generate version and ensure required metadata
+        id: generate_version
+        working-directory: ./sandbox
+        env:
+          RELEASE_TYPE: ${{ inputs.release_type }}
+        run: |
+          # Get current Unix epoch time (seconds since January 1, 1970)
+          EPOCH_TIME=$(date +%s)
+
+          # Check if version is already defined in pyproject.toml
+          if grep -q "version =" "pyproject.toml"; then
+            # Read the current base version (remove any existing suffixes)
+            CURRENT_VERSION=$(grep "version =" "pyproject.toml" | sed -E 's/version *= *"([^"-]+).*/\1/')
+            echo "Base version from pyproject.toml: $CURRENT_VERSION"
+
+            # Handle different release types
+            if [ "$RELEASE_TYPE" = "formal" ]; then
+              # For formal release, use version exactly as in pyproject.toml
+              FINAL_VERSION="${CURRENT_VERSION}"
+              echo "Formal release - using exact version: $FINAL_VERSION"
+            else
+              # For dev release, append -dev-epochtime format
+              FINAL_VERSION="${CURRENT_VERSION}-dev-${EPOCH_TIME}"
+              echo "Dev release - using version with epoch timestamp: $FINAL_VERSION"
+            fi
+
+            # Update version in pyproject.toml
+            sed -i -E "s/version *= *\"[^\"]+\"/version = \"$FINAL_VERSION\"/" pyproject.toml
+
+            # Output version for later steps
+            echo "version=$FINAL_VERSION" >> $GITHUB_OUTPUT
           else
-            # For dev release, append -dev-epochtime format
-            FINAL_VERSION="${CURRENT_VERSION}-dev-${EPOCH_TIME}"
-            echo "Dev release - using version with epoch timestamp: $FINAL_VERSION"
-          fi
-          
-          # Update version in pyproject.toml
-          sed -i -E "s/version *= *\"[^\"]+\"/version = \"$FINAL_VERSION\"/" pyproject.toml
-          
-          # Output version for later steps
-          echo "version=$FINAL_VERSION" >> $GITHUB_OUTPUT
-        else
-          # If no version defined, add initial version
-          if [ "${{ github.event.inputs.release_type }}" = "formal" ]; then
-            FINAL_VERSION="0.1.0"
-          else
-            FINAL_VERSION="0.1.0-dev-${EPOCH_TIME}"
-          fi
-          
-          echo "No version found. Adding version: $FINAL_VERSION"
-          sed -i "/build-backend/a version = \"$FINAL_VERSION\"" pyproject.toml
-          
-          echo "version=$FINAL_VERSION" >> $GITHUB_OUTPUT
-        fi
-    
-    - name: Build package with uv
-      working-directory: ./sandbox
-      run: |
-        # Build using uv build which handles both sdist and wheel
-        uv build
-        
-    - name: Generate artifact attestation
-      uses: actions/attest-build-provenance@v2
-      with:
-        subject-path: 'sandbox/dist/*'
+            # If no version defined, add initial version
+            if [ "$RELEASE_TYPE" = "formal" ]; then
+              FINAL_VERSION="0.1.0"
+            else
+              FINAL_VERSION="0.1.0-dev-${EPOCH_TIME}"
+            fi
 
-    - name: Publish package to PyPI
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        packages-dir: sandbox/dist/
+            echo "No version found. Adding version: $FINAL_VERSION"
+            sed -i "/build-backend/a version = \"$FINAL_VERSION\"" pyproject.toml
+
+            echo "version=$FINAL_VERSION" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Build with locked dependencies
+        working-directory: ./sandbox
+        run: uv build --build-constraints requirements-build.txt --require-build-hashes
+
+      - name: Record distribution digests
+        id: digest
+        working-directory: ./sandbox
+        run: |
+          python3 - <<'PYTHON'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          digests = {
+              path.name: hashlib.sha256(path.read_bytes()).hexdigest()
+              for pattern in ("*.whl", "*.tar.gz")
+              for path in sorted(Path("dist").glob(pattern))
+          }
+          with open(os.environ["GITHUB_OUTPUT"], "a") as output:
+              output.write(f"sha256={json.dumps(digests)}\n")
+          PYTHON
+
+      - name: Upload distributions
+        id: upload
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: sandbox-mcp-dists
+          path: |
+            sandbox/dist/*.whl
+            sandbox/dist/*.tar.gz
+          if-no-files-found: error
+          retention-days: 7
+
+  publish-to-pypi:
+    needs: build
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    environment:
+      name: pypi-production
+      url: https://pypi.org/project/mcp-server-plaid
+    permissions:
+      contents: read
+      id-token: write
+      attestations: write
+    steps:
+      - name: Download this build's distributions
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
+          merge-multiple: true
+          path: dist/
+
+      - name: Verify distribution digests
+        env:
+          EXPECTED_DIGESTS: ${{ needs.build.outputs.dist-sha256 }}
+        run: |
+          python3 - <<'PYTHON'
+          import hashlib
+          import json
+          import os
+          from pathlib import Path
+
+          expected = json.loads(os.environ["EXPECTED_DIGESTS"])
+          files = list(Path("dist").iterdir())
+          if len(files) != 2 or {path.name for path in files} != set(expected):
+              raise SystemExit("Unexpected distribution files")
+          if sum(path.name.endswith(".whl") for path in files) != 1 or sum(
+              path.name.endswith(".tar.gz") for path in files
+          ) != 1:
+              raise SystemExit("Expected one wheel and one source distribution")
+          for path in files:
+              if path.is_symlink() or not path.is_file():
+                  raise SystemExit(f"Not a regular distribution file: {path.name}")
+              if hashlib.sha256(path.read_bytes()).hexdigest() != expected[path.name]:
+                  raise SystemExit(f"Distribution digest mismatch: {path.name}")
+          PYTHON
+
+      - name: Generate artifact attestation
+        uses: actions/attest-build-provenance@e8998f949152b193b063cb0ec769d69d929409be # v2.4.0
+        with:
+          subject-path: 'dist/*'
+
+      - name: Publish package to PyPI
+        # PyPA publisher image for commit 7245906fb61fa33a13554f9d5fb856fe61758086.
+        uses: docker://ghcr.io/pypa/gh-action-pypi-publish@sha256:411241df99067c98b6d08fd8e26d14e86740a22460599c2af571e6dc26e27ffc
+        env:
+          # Direct Docker actions do not inherit the wrapper action's defaults.
+          INPUT_USER: __token__
+          INPUT_PASSWORD: ''
+          INPUT_REPOSITORY_URL: https://upload.pypi.org/legacy/
+          INPUT_PACKAGES_DIR: dist/
+          INPUT_VERIFY_METADATA: 'true'
+          INPUT_SKIP_EXISTING: 'false'
+          INPUT_VERBOSE: 'true'
+          INPUT_PRINT_HASH: 'true'
+          INPUT_ATTESTATIONS: 'true'
